@@ -1,8 +1,8 @@
-import { Alert, FlatList, Text, View } from "react-native";
+import { Alert, FlatList, Text, TextInput, View } from "react-native";
 import { styles } from "./styles";
 import { Header } from "../components/Header";
 import { Task } from "../components/Task";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { taskDTO } from "../dtos/TaskDTO";
 import { Empty } from "../components/Empty";
 import { uuid } from "../utils/uuid";
@@ -10,6 +10,7 @@ import { uuid } from "../utils/uuid";
 export function HomeScreen() {
   const [tasks, setTasks] = useState<taskDTO[]>([])
   const [newTask, setNewTask] = useState('')
+  const newTaskInputRef = useRef<TextInput>(null)
 
   function handleTaskAdd() {
     if(newTask !== '' && newTask.length >= 5) {
@@ -19,6 +20,8 @@ export function HomeScreen() {
       Alert.alert("Não é possível adicionar uma tarefa vazia ou menor que 5 digitos.")
     }
     setNewTask('')
+
+    newTaskInputRef.current?.blur()
   }
 
   function handleTaskDone(id: string) {
@@ -43,6 +46,7 @@ export function HomeScreen() {
         style: 'cancel'
       }
     ])
+    newTaskInputRef.current?.blur()
   }
 
   const totalTasksCreated = tasks.length
@@ -50,7 +54,7 @@ export function HomeScreen() {
 
   return (
     <View style={styles.container}>
-      <Header task={newTask} onChangeText={setNewTask} onPress={handleTaskAdd} />
+      <Header inputRef={newTaskInputRef} task={newTask} onChangeText={setNewTask} onPress={handleTaskAdd} />
       <View style={styles.tasksContainer}>
         <View style={styles.info}>
           <View style={styles.row}>
